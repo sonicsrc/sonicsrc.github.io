@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>All posts — {{ site_title }}</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><a href="/">{{ site_title }}</a></h1>
+    <nav class="nav"><a href="/">Home</a> · <a href="/posts/">All Posts</a></nav>
+  </header>
+
+  <main class="container">
+    <section class="posts">
+      <h2>All Posts</h2>
+      <ul>
+      {%- for p in posts %}
+        <li><a href="/{{ p.url }}">{{ p.title }}</a> <span class="muted">— {{ p.date.strftime('%Y-%m-%d') }}</span></li>
+      {%- endfor %}
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer"><small>© {{ site_title }}</small></footer>
+</body>
+</html>
