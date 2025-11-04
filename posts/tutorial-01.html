@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="../assets/style.css">
+  <title>Safe Debian upgrades — sonicsrc</title>
+</head>
+<body>
+  <main class="container">
+    <header class="top">
+      <h1>Safe Debian upgrades — checklist</h1>
+      <p class="tag">Short, reproducible commands</p>
+    </header>
+
+    <article class="intro">
+      <h2>Goal</h2>
+      <p>Upgrade packages while avoiding unintended kernel upgrades or package breakage.</p>
+
+      <h3>Checklist</h3>
+      <ol>
+        <li>Update package lists: <code>sudo apt update</code></li>
+        <li>Simulate upgrade: <code>apt -s upgrade</code></li>
+        <li>Simulate full upgrade: <code>apt -s full-upgrade</code></li>
+        <li>Perform upgrade: <code>sudo apt upgrade</code></li>
+      </ol>
+
+      <h3>Notes</h3>
+      <p>Simulate first. Check held packages. Test in VM if possible.</p>
+    </article>
+
+    <p><a href="../index.html">← Back</a></p>
+  </main>
+</body>
+</html>
