@@ -6,11 +6,7 @@ slug: "how-to-install-and-pin-kali-linux-kernel-from-scratch"
 
 # Geek-along: Install —and pin— Linux kernel **6.12.38** on Debian/Kali
 
-*Senior cyber security mentor → apprentice Greg. Focus: stable, simple, secure.*
-
-> **Quotation:** "Stability in a kernel upgrade is not heroism — it's careful preparation."  
-> — Senior instructor
-
+*Stable, simple, secure.*
 ---
 
 ## TL;DR
@@ -251,7 +247,3 @@ sudo apt-mark hold linux-image-6.12.38+kali-amd64 linux-headers-6.12.38+kali-amd
 ```
 
 ---
-
-## Closing note to Greg (mentor → apprentice)
-
-This process is about minimizing surprises. When you install a non-default kernel, you assume responsibility for boot integrity, driver matching, and update policy. Keep things explicit: store the .deb files, hold the versions you trust, and document your steps. If anything looks odd during dpkg or update-grub, stop and investigate—don't guess.
