@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>How to install and pin kali linux kernel from scratch</title>
+  <link rel="stylesheet" href="/assets/style.css"/>
+</head>
+<body>
+  <main class="container">
+    <article class="post">
+      <header>
+        <h1>How to install and pin kali linux kernel from scratch</h1>
+        
+          <p class="meta">2025-11-05</p>
+        
+      </header>
+
+      <section class="content">
+        <h1>Geek-along: Install —and pin— Linux kernel <strong>6.12.38</strong> on Debian/Kali</h1>
+<p><em>Senior cyber security mentor → apprentice Greg. Focus: stable, simple, secure.</em></p>
+<blockquote>
+<p><strong>Quotation:</strong> "Stability in a kernel upgrade is not heroism — it's careful preparation."<br />
+— Senior Instructor</p>
+</blockquote>
+<hr />
+<h2>TL;DR</h2>
+<p>This walkthrough shows how to install a specific downloaded kernel package (example: <strong>6.12.38+kali-amd64</strong>), ensure the matching headers are present, fix packaging hiccups, and pin/hold that kernel so your system doesn't auto-upgrade to an unwanted 6.16+ kernel. Commands are copy-ready. Prioritize backups and test on non-production first.</p>
+<hr />
+<h2>Prerequisites</h2>
+<ul>
+<li>You must be root or use <code>sudo</code>.</li>
+<li>Local copies of the <code>.deb</code> packages for the kernel you want (e.g., <code>linux-image-6.12.38+kali-amd64_*.deb</code>, <code>linux-headers-6.12.38+kali-amd64_*.deb</code>, <code>linux-headers-6.12.38+kali-common_*.deb</code>, and <code>linux-kbuild-6.12.38+kali_*.deb</code>), placed in a working directory.</li>
+<li>Enough free space in <code>/boot</code>.</li>
+<li>Familiarity with <code>grub</code>, <code>dpkg</code>, and <code>apt</code>.</li>
+<li>A rescue medium or a second machine (recommended) in case of boot problems.</li>
+</ul>
+<hr />
+<h2>Safety first — backup and inventory</h2>
+<p>Before changing kernels, snapshot what you currently have and back up important files:</p>
+<pre><code class="language-bash"># Save current kernel info
+uname -a &gt; ~/kernel-before.txt
+dpkg --list | grep linux-image &gt; ~/installed-images-before.txt
+dpkg --list | grep linux-headers &gt; ~/installed-headers-before.txt
+
+# Copy /boot (for quick rollback)
+sudo mkdir -p ~/boot-backup
+sudo cp -a /boot/* ~/boot-backup/
+</code></pre>
+<p>If you're on LVM/ZFS/BTRFS consider taking a snapshot instead.</p>
+<hr />
+<h2>Pre-checks (quick commands)</h2>
+<pre><code class="language-bash"># See installed headers and images
+dpkg --list | grep linux-headers
+dpkg --list | grep linux-image
+
+# Search available packages from repo (informational)
+apt search linux-headers
+</code></pre>
+<hr />
+<h2>Step 1 — Update apt and ensure linux-base is present</h2>
+<p>A minimal update and ensuring linux-base exists avoids odd dependency problems:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install --yes linux-base
+</code></pre>
+<hr />
+<h2>Step 2 — Install kernel .debs in the safe order</h2>
+<p>If you've downloaded the kernel .deb files into your working directory, install in the order that ensures build-common &amp; headers are present before the image if needed.</p>
+<pre><code class="language-bash"># from your working dir containing the .deb files:
+# 1) kbuild (if provided)
+sudo dpkg -i linux-kbuild-6.12.38+kali_*.deb
+
+# 2) common headers
+sudo dpkg -i linux-headers-6.12.38+kali-common_*.deb
+
+# 3) image + arch-specific headers
+sudo dpkg -i linux-image-6.12.38+kali-amd64_*.deb linux-headers-6.12.38+kali-amd64_*.deb
+</code></pre>
+<p>If dpkg reports dependency problems, run:</p>
+<pre><code class="language-bash">sudo apt --fix-broken install
+# Then re-run the dpkg command if needed
+sudo dpkg -i linux-image-6.12.38+kali-amd64_*.deb linux-headers-6.12.38+kali-amd64_*.deb
+</code></pre>
+<p><strong>Explainer:</strong> <code>dpkg -i</code> installs local .debs. <code>apt --fix-broken install</code> lets APT fetch missing dependencies from repositories to complete the install.</p>
+<hr />
+<h2>Step 3 — Ensure initramfs and grub are updated</h2>
+<p>After installing, regenerate initramfs and update GRUB so the new kernel is bootable:</p>
+<pre><code class="language-bash"># Replace KVER with the precise version if needed:
+KVER=&quot;6.12.38+kali-amd64&quot;
+
+# generate initramfs for the new kernel (if the package didn't)
+sudo update-initramfs -c -k &quot;${KVER}&quot;
+
+# update grub config
+sudo update-grub
+</code></pre>
+<p>On systems using grub-mkconfig directly (some distributions):</p>
+<pre><code class="language-bash">sudo grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+<hr />
+<h2>Step 4 — Reboot — and verify</h2>
+<p>Now reboot into the new kernel and verify:</p>
+<pre><code class="language-bash">sudo reboot
+# after login:
+uname -r
+# expected: 6.12.38+kali-amd64
+</code></pre>
+<p>Confirm the headers are installed for the running kernel:</p>
+<pre><code class="language-bash">sudo apt install linux-headers-$(uname -r)  # safe no-op if already present
+dpkg -l | grep headers-$(uname -r)
+</code></pre>
+<hr />
+<h2>Preventing automatic upgrades to 6.16+ (pin/hold)</h2>
+<p>If your goal is to stay on 6.12.38 and avoid 6.16+, prefer explicit holds for the specific packages you installed. This is safer than globally blocking all kernel updates.</p>
+<pre><code class="language-bash">sudo apt-mark hold linux-image-6.12.38+kali-amd64 linux-headers-6.12.38+kali-amd64 linux-headers-6.12.38+kali-common linux-kbuild-6.12.38+kali
+</code></pre>
+<p>To list holds:</p>
+<pre><code class="language-bash">apt-mark showhold
+</code></pre>
+<p>To undo:</p>
+<pre><code class="language-bash">sudo apt-mark unhold linux-image-6.12.38+kali-amd64 linux-headers-6.12.38+kali-amd64
+</code></pre>
+<p><strong>Alternative (advanced):</strong> use APT pinning (<code>/etc/apt/preferences.d/</code>) to pin exact versions. That is more flexible but also more complex — for most use-cases <code>apt-mark hold</code> is clear and stable.</p>
+<hr />
+<h2>How to remove/purge an unwanted kernel (careful)</h2>
+<p>If a newer kernel slipped in and you want to remove it:</p>
+<pre><code class="language-bash"># Example: remove a specific problematic kernel
+sudo apt remove --purge linux-image-6.16.0-xxx linux-headers-6.16.0-xxx
+sudo update-grub
+</code></pre>
+<p><strong>Always keep at least one known-good kernel installed. Do not purge the kernel you are running.</strong></p>
+<hr />
+<h2>Troubleshooting tips</h2>
+<ul>
+<li>
+<p><strong>Partial install / broken packages:</strong> <code>sudo apt --fix-broken install</code> then re-run the dpkg -i sequence.</p>
+</li>
+<li>
+<p><strong>Grub didn't list kernel:</strong> check <code>/boot</code> for vmlinuz and initramfs for that version. Re-run <code>sudo update-grub</code>.</p>
+</li>
+<li>
+<p><strong>Boot fails:</strong> on rescue/Live, restore <code>/boot</code> from <code>~/boot-backup</code> or reinstall grub. Keep rescue media ready.</p>
+</li>
+<li>
+<p><strong>Secure Boot systems:</strong> unsigned kernels won't boot with Secure Boot enabled. Either sign the kernels or disable Secure Boot (understand the security implications).</p>
+</li>
+</ul>
+<hr />
+<h2>Notes &amp; best practices (mentor's list)</h2>
+<ul>
+<li>
+<p>Prefer vendor-supplied kernels where possible — they include distro patches and security fixes.</p>
+</li>
+<li>
+<p>If you must run a specific kernel (for hardware support or compliance), pin exact package names and versions as shown. Avoid holding <code>linux-image*</code> globally unless you truly need to freeze kernel updates.</p>
+</li>
+<li>
+<p>Keep a recovery plan: rescue USB, known-good kernel, remote console access (if on a server), snapshots.</p>
+</li>
+<li>
+<p>Keep kernel packages in an archive directory so you can reinstall without redownloading.</p>
+</li>
+<li>
+<p>Document the changes (commit to your sysadmin notes / Change Control).</p>
+</li>
+</ul>
+<hr />
+<h2>Useful copyable checklist</h2>
+<pre><code class="language-bash"># 1) pre-checks
+dpkg --list | grep linux-headers
+apt search linux-headers
+uname -r
+
+# 2) install (from .deb files)
+sudo apt update
+sudo apt install --yes linux-base
+sudo dpkg -i linux-kbuild-6.12.38+kali_*.deb
+sudo dpkg -i linux-headers-6.12.38+kali-common_*.deb
+sudo dpkg -i linux-image-6.12.38+kali-amd64_*.deb linux-headers-6.12.38+kali-amd64_*.deb
+sudo apt --fix-broken install
+sudo dpkg -i linux-image-6.12.38+kali-amd64_*.deb linux-headers-6.12.38+kali-amd64_*.deb
+
+# 3) initramfs + grub
+KVER=&quot;6.12.38+kali-amd64&quot;
+sudo update-initramfs -c -k &quot;${KVER}&quot;
+sudo update-grub
+
+# 4) reboot &amp; verify
+sudo reboot
+# after login:
+uname -r
+dpkg -l | grep headers-$(uname -r)
+
+# 5) hold kernel packages to prevent auto-upgrade
+sudo apt-mark hold linux-image-6.12.38+kali-amd64 linux-headers-6.12.38+kali-amd64
+</code></pre>
+<hr />
+<h2>Figure suggestion</h2>
+<pre><code>&lt;figure&gt;
+  &lt;img src=&quot;/assets/images/kernel-install-flow.svg&quot; alt=&quot;Kernel install flow&quot; width=&quot;720&quot;/&gt;
+  &lt;figcaption&gt;Figure: simplified flow for installing and pinning a kernel.&lt;/figcaption&gt;
+&lt;/figure&gt;
+</code></pre>
+<hr />
+<h2>Closing note to Greg (mentor → apprentice)</h2>
+<p>This process is about minimizing surprises. When you install a non-default kernel, you assume responsibility for boot integrity, driver matching, and update policy. Keep things explicit: store the .deb files, hold the versions you trust, and document your steps. If anything looks odd during dpkg or update-grub, stop and investigate—don't guess.</p>
+      </section>
+
+      <footer>
+        <hr/>
+        <p style="color:var(--muted)">Published by the site. Keep backups and test kernels on non-production machines.</p>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>
