@@ -51,35 +51,55 @@ def ensure_site():
 def build_posts():
     posts_meta = []
     md = markdown.Markdown(extensions=['fenced_code', 'tables'])
-    for mdfile in sorted(POSTS_DIR.glob('*.md')):
-        text = mdfile.read_text(encoding='utf-8')
+    for mdfile in sorted(POSTS_DIR.glob("*.md")):
+        try:
+            text = mdfile.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"[WARN] Could not read {mdfile}: {e}")
+            continue
+
         fm, body = parse_front_matter(text)
-        html_body = md.convert(body)
-        
-        # title and date
-        title = fm.get('title') or mdfile.stem.replace('-', ' ').title()
-        date_str = fm.get('date')
-        if date_str:
-            try:
-                date = datetime.datetime.fromisoformat(date_str)
-                # Normalize: strip timezone if present
-                if date.tzinfo is not None:
-                    date = date.replace(tzinfo=None)
-            except Exception:
-                date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
-        else:
+        if not fm.get("title"):
+            print(f"[SKIP] {mdfile.name}: missing front matter title")
+            continue
+
+        # Normalize slug safely
+        slug = (fm.get("slug") or mdfile.stem).strip().lower()
+        slug = "".join(c if c.isalnum() or c == "-" else "-" for c in slug)
+        slug = "-".join(filter(None, slug.split("-")))  # collapse multiple dashes
+
+        # Markdown → HTML
+        try:
+            html_body = md.convert(body)
+        except Exception as e:
+            print(f"[WARN] Markdown conversion failed for {mdfile}: {e}")
+            continue
+
+        # Title and date
+        title = fm["title"]
+        date_str = fm.get("date", "")
+        try:
+            date = datetime.datetime.fromisoformat(date_str) if date_str else datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
+        except Exception:
             date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
 
-        slug = fm.get('slug') or mdfile.stem
+        # Write HTML file
         outpath = SITE / "posts" / f"{slug}.html"
         tpl = env.get_template("post.html")
-        out = tpl.render(title=title, content=html_body, date=date.strftime('%Y-%m-%d'), site_title="sonicsrc")
-        outpath.write_text(out, encoding='utf-8')
-        posts_meta.append({'title': title, 'url': f"posts/{slug}.html", 'date': date})
-        md.reset()  # reset markdown instance state
-        
-    # sort posts newest-first
-    posts_meta.sort(key=lambda x: x['date'], reverse=True)
+        rendered = tpl.render(
+            title=title,
+            content=html_body,
+            date=date.strftime("%Y-%m-%d"),
+            site_title="sonicsrc",
+        )
+        outpath.write_text(rendered, encoding="utf-8")
+        posts_meta.append({"title": title, "url": f"posts/{slug}.html", "date": date})
+
+        print(f"[OK] Built {slug}.html from {mdfile.name}")
+        md.reset()
+
+    posts_meta.sort(key=lambda x: x["date"], reverse=True)
+    print(f"Built {len(posts_meta)} posts.")
     return posts_meta
 
 
