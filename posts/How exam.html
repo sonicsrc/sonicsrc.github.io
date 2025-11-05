@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>How exam — sonicsrc</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><a href="/">sonicsrc</a></h1>
+    <nav class="nav"><a href="/">Home</a> · <a href="/posts/">All Posts</a></nav>
+  </header>
+  <main class="container">
+    <article class="intro">
+      <h2>How exam</h2>
+      <p class="meta">Published: 2025-11-05</p>
+      <div class="post-content"><hr />
+<p>title: Getting Started with Python Static Site Generators
+date: 2025-11-05
+slug: python-static-site-generators</p>
+<hr />
+<h1>Getting Started with Python Static Site Generators</h1>
+<p>Static site generators (SSGs) have become the go-to solution for developers who want fast, secure, and maintainable websites without the overhead of a full CMS. In this post, we'll explore why Python is an excellent choice for building your own SSG and walk through a minimal, production-ready example.</p>
+<h2>Why Build Your Own SSG?</h2>
+<p>Most developers start with tools like Jekyll, Hugo, or Eleventy. But rolling your own has distinct advantages:</p>
+<ul>
+<li><strong>Full control</strong>: No black-box behavior or plugin conflicts.</li>
+<li><strong>Lightweight</strong>: Zero runtime dependencies beyond Python.</li>
+<li><strong>Extensible</strong>: Add only the features you need.</li>
+<li><strong>Educational</strong>: Deep understanding of how static sites work under the hood.</li>
+</ul>
+<blockquote>
+<p><strong>Technical Note</strong>: An SSG converts source files (usually Markdown) into static HTML using templates. It runs at <em>build time</em>, not request time—resulting in sub-millisecond page loads.</p>
+</blockquote>
+<h2>Core Components of an SSG</h2>
+<p>A minimal SSG needs just four pieces:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Responsibility</th>
+<th>Python Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Parser</td>
+<td>Read <code>.md</code> files + front matter</td>
+<td><code>pathlib</code>, custom parser</td>
+</tr>
+<tr>
+<td>Markdown → HTML</td>
+<td>Convert syntax to markup</td>
+<td><code>markdown</code> library</td>
+</tr>
+<tr>
+<td>Templating</td>
+<td>Insert content into layouts</td>
+<td><code>jinja2</code></td>
+</tr>
+<tr>
+<td>File Output</td>
+<td>Write final HTML + copy assets</td>
+<td><code>shutil</code>, <code>pathlib</code></td>
+</tr>
+</tbody>
+</table>
+<p>That's exactly what our <a href="link-to-script-post">previous script</a> implements in under 100 lines.</p>
+<h2>Example Post Structure</h2>
+<p>Here's how a typical post looks in <code>content/posts/</code>:</p>
+<h2>```markdown</h2>
+<p>title: My Awesome Post
+date: 2025-11-05
+slug: my-awesome-post</p>
+<hr />
+<h1>Main Heading</h1>
+<p>Regular <strong>Markdown</strong> content goes here.</p>
+<p>```python
+print("Hello, SSG!")</p></div>
+    </article>
+    <p><a href="/posts/">← All posts</a></p>
+  </main>
+  <footer class="footer"><small>© sonicsrc</small></footer>
+</body>
+</html>
