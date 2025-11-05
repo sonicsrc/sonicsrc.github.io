@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>True false negpos — sonicsrc</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><a href="/">sonicsrc</a></h1>
+    <nav class="nav"><a href="/">Home</a> · <a href="/posts/">All Posts</a></nav>
+  </header>
+  <main class="container">
+    <article class="intro">
+      <h2>True false negpos</h2>
+      <p class="meta">Published: 2025-11-05</p>
+      <div class="post-content"><h1>Images &amp; Copyable Blocks</h1>
+<p>This post demonstrates an image, a captioned figure, a copy-friendly command block, and a syntax-highlighted code block.</p>
+<h2>Image via Markdown</h2>
+<p>You can reference images stored in <code>assets/images/</code>:</p>
+<p><img alt="Mock screenshot" src="/assets/images/mock-screenshot.png" title="Mock screenshot" /></p>
+<h2>Image with caption and sizing (HTML figure)</h2>
+<p>If you want a caption or to control width, use HTML:</p>
+<figure>
+  <img src="/assets/images/linux-hardening-flow.svg" alt="Linux hardening flow" width="720"/>
+  <figcaption>Figure: Linux hardening flow (SVG)</figcaption>
+</figure>
+
+<blockquote>
+<p>Tip: use root-relative paths (<code>/assets/images/...</code>) so the image works the same locally and on GitHub Pages.</p>
+</blockquote>
+<h2>Copyable shell commands</h2>
+<p>Run these in a terminal. The copy button will remove the leading <code>$</code> characters so you get runnable lines:</p>
+<p>```bash
+$ ./newpost.sh "My New Post"
+$ git add .
+$ git commit -m "Add post with image"
+$ git push</p>
+<hr />
+<h1>3) Add image to repository (commands)</h1>
+<p>From the repo root:</p>
+<p>```bash</p>
+<h1>copy your image into assets</h1>
+<p>cp /path/to/mock-screenshot.png assets/images/</p>
+<h1>strip metadata (recommended by your README security notes)</h1>
+<h1>requires exiftool; install if missing (e.g., apt-get install libimage-exiftool-perl)</h1>
+<p>exiftool -all= assets/images/mock-screenshot.png</p>
+<h1>(exiftool writes a _original copy by default unless you pass -overwrite_original)</h1>
+<h1>stage &amp; commit</h1>
+<p>git add assets/images/mock-screenshot.png content/posts/2025-11-05-images-and-copyable-commands.md
+git commit -m "Add example post with image and copyable commands"
+git push</p></div>
+    </article>
+    <p><a href="/posts/">← All posts</a></p>
+  </main>
+  <footer class="footer"><small>© sonicsrc</small></footer>
+</body>
+</html>
