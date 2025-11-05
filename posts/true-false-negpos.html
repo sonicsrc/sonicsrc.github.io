@@ -31,25 +31,27 @@
 </blockquote>
 <h2>Copyable shell commands</h2>
 <p>Run these in a terminal. The copy button will remove the leading <code>$</code> characters so you get runnable lines:</p>
-<p>```bash
-$ ./newpost.sh "My New Post"
+<pre><code class="language-bash">$ ./newpost.sh &quot;My New Post&quot;
 $ git add .
-$ git commit -m "Add post with image"
-$ git push</p>
+$ git commit -m &quot;Add post with image&quot;
+$ git push
+</code></pre>
 <hr />
 <h1>3) Add image to repository (commands)</h1>
 <p>From the repo root:</p>
-<p>```bash</p>
-<h1>copy your image into assets</h1>
-<p>cp /path/to/mock-screenshot.png assets/images/</p>
-<h1>strip metadata (recommended by your README security notes)</h1>
-<h1>requires exiftool; install if missing (e.g., apt-get install libimage-exiftool-perl)</h1>
-<p>exiftool -all= assets/images/mock-screenshot.png</p>
-<h1>(exiftool writes a _original copy by default unless you pass -overwrite_original)</h1>
-<h1>stage &amp; commit</h1>
-<p>git add assets/images/mock-screenshot.png content/posts/2025-11-05-images-and-copyable-commands.md
-git commit -m "Add example post with image and copyable commands"
-git push</p></div>
+<pre><code class="language-bash"># copy your image into assets
+cp /path/to/mock-screenshot.png assets/images/
+
+# strip metadata (recommended by your README security notes)
+# requires exiftool; install if missing (e.g., apt-get install libimage-exiftool-perl)
+exiftool -all= assets/images/mock-screenshot.png
+# (exiftool writes a _original copy by default unless you pass -overwrite_original)
+
+# stage &amp; commit
+git add assets/images/mock-screenshot.png content/posts/2025-11-05-images-and-copyable-commands.md
+git commit -m &quot;Add example post with image and copyable commands&quot;
+git push
+</code></pre></div>
     </article>
     <p><a href="/posts/">← All posts</a></p>
   </main>
