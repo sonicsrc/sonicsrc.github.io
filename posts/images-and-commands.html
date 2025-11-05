@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Images & copyable command/code blocks — sonicsrc</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><a href="/">sonicsrc</a></h1>
+    <nav class="nav"><a href="/">Home</a> · <a href="/posts/">All Posts</a></nav>
+  </header>
+  <main class="container">
+    <article class="intro">
+      <h2>Images & copyable command/code blocks</h2>
+      <p class="meta">Published: 2025-11-05</p>
+      <div class="post-content"><h1>Images &amp; Copyable Blocks</h1>
+<p>This post demonstrates an image, a captioned figure, a copy-friendly command block, and a syntax-highlighted code block.</p>
+<h2>Image via Markdown</h2>
+<p>You can reference images stored in <code>assets/images/</code>:</p>
+<p><img alt="Mock screenshot" src="/assets/images/mock-screenshot.png" title="Mock screenshot" /></p>
+<h2>Image with caption and sizing (HTML figure)</h2>
+<p>If you want a caption or to control width, use HTML:</p>
+<figure>
+  <img src="/assets/images/linux-hardening-flow.svg" alt="Linux hardening flow" width="720"/>
+  <figcaption>Figure: Linux hardening flow (SVG)</figcaption>
+</figure>
+
+<blockquote>
+<p>Tip: use root-relative paths (<code>/assets/images/...</code>) so the image works the same locally and on GitHub Pages.</p>
+</blockquote>
+<h2>Copyable shell commands</h2>
+<p>Run these in a terminal. The copy button will remove the leading <code>$</code> characters so you get runnable lines:</p>
+<p>```bash
+$ ./newpost.sh "My New Post"
+$ git add .
+$ git commit -m "Add post with image"
+$ git push</p></div>
+    </article>
+    <p><a href="/posts/">← All posts</a></p>
+  </main>
+  <footer class="footer"><small>© sonicsrc</small></footer>
+</body>
+</html>
