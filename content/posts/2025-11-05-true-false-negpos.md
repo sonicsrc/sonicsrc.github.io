@@ -35,7 +35,7 @@ $ ./newpost.sh "My New Post"
 $ git add .
 $ git commit -m "Add post with image"
 $ git push
-
+```
 
 ---
 
@@ -56,4 +56,4 @@ exiftool -all= assets/images/mock-screenshot.png
 git add assets/images/mock-screenshot.png content/posts/2025-11-05-images-and-copyable-commands.md
 git commit -m "Add example post with image and copyable commands"
 git push
-
+```
