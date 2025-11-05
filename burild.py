@@ -23,7 +23,6 @@ POSTS_DIR = CONTENT / "posts"
 
 env = Environment(loader=FileSystemLoader(str(TEMPLATES)))
 
-
 def parse_front_matter(text):
     text = text.lstrip()
     if text.startswith('---'):
@@ -39,14 +38,12 @@ def parse_front_matter(text):
             return fm, body
     return {}, text
 
-
 def ensure_site():
     if SITE.exists():
         shutil.rmtree(SITE)
     SITE.mkdir(parents=True, exist_ok=True)
     (SITE / "posts").mkdir(parents=True, exist_ok=True)
     (SITE / "assets").mkdir(parents=True, exist_ok=True)
-
 
 def build_posts():
     posts_meta = []
@@ -55,11 +52,10 @@ def build_posts():
         text = mdfile.read_text(encoding='utf-8')
         fm, body = parse_front_matter(text)
         html_body = md.convert(body)
-        
         # title and date
         title = fm.get('title') or mdfile.stem.replace('-', ' ').title()
         date_str = fm.get('date')
-        if date_str:
+    if date_str:
             try:
                 date = datetime.datetime.fromisoformat(date_str)
                 # Normalize: strip timezone if present
@@ -67,7 +63,7 @@ def build_posts():
                     date = date.replace(tzinfo=None)
             except Exception:
                 date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
-        else:
+    else:
             date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
 
         slug = fm.get('slug') or mdfile.stem
@@ -77,11 +73,9 @@ def build_posts():
         outpath.write_text(out, encoding='utf-8')
         posts_meta.append({'title': title, 'url': f"posts/{slug}.html", 'date': date})
         md.reset()  # reset markdown instance state
-        
     # sort posts newest-first
     posts_meta.sort(key=lambda x: x['date'], reverse=True)
     return posts_meta
-
 
 def build_indexes(posts_meta):
     # site index (home)
@@ -91,7 +85,6 @@ def build_indexes(posts_meta):
     # posts listing
     tpl_posts = env.get_template("posts_index.html")
     SITE.joinpath("posts/index.html").write_text(tpl_posts.render(posts=posts_meta, site_title="sonicsrc"), encoding='utf-8')
-
 
 def copy_assets():
     assets_dir = Path("assets")
@@ -106,14 +99,12 @@ def copy_assets():
         else:
             shutil.copy2(item, target)
 
-
 def main():
     ensure_site()
     posts_meta = build_posts()
     build_indexes(posts_meta)
     copy_assets()
     print("Built site/ with", len(posts_meta), "posts.")
-
 
 if __name__ == "__main__":
     main()
