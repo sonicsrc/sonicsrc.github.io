@@ -9,7 +9,7 @@ slug: "how-to-install-and-pin-kali-linux-kernel-from-scratch"
 *Senior cyber security mentor → apprentice Greg. Focus: stable, simple, secure.*
 
 > **Quotation:** "Stability in a kernel upgrade is not heroism — it's careful preparation."  
-> — Senior Instructor
+> — Senior instructor
 
 ---
 
