@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280">
+<style>
+  .bg{fill:#0a0f14}
+  .b{fill:#11181f;stroke:#1d3b4a;stroke-width:2}
+  .t{fill:#b9ffe0;font-family:monospace;font-size:20px}
+  .s{fill:#9dc0d0;font-family:monospace;font-size:14px}
+  .a{stroke:#52e0b9;stroke-width:2;fill:none}
+</style>
+<rect class="bg" width="900" height="280"/>
+<rect x="40" y="100" width="240" height="80" rx="8" class="b"/>
+<rect x="330" y="100" width="240" height="80" rx="8" class="b"/>
+<rect x="620" y="100" width="240" height="80" rx="8" class="b"/>
+<text x="65" y="135" class="t">Kernel Control</text>
+<text x="355" y="135" class="t">Audit & FIM</text>
+<text x="650" y="135" class="t">Policy Lockdown</text>
+<text x="55" y="165" class="s">Pin + verify</text>
+<text x="345" y="165" class="s">AIDE + auditd</text>
+<text x="650" y="165" class="s">AppArmor + SSH</text>
+<line x1="280" y1="140" x2="330" y2="140" class="a"/>
+<line x1="570" y1="140" x2="620" y2="140" class="a"/>
+</svg>

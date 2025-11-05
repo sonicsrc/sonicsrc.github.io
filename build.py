@@ -56,12 +56,15 @@ def build_posts():
         title = fm.get('title') or mdfile.stem.replace('-', ' ').title()
         date_str = fm.get('date')
         if date_str:
-            try:
-                date = datetime.datetime.fromisoformat(date_str)
-            except Exception:
-                date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
-        else:
-            date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
+    try:
+        date = datetime.datetime.fromisoformat(date_str)
+        # Normalize: strip timezone if present
+        if date.tzinfo is not None:
+            date = date.replace(tzinfo=None)
+    except Exception:
+        date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
+else:
+    date = datetime.datetime.fromtimestamp(mdfile.stat().st_mtime)
 
         slug = fm.get('slug') or mdfile.stem
         outpath = SITE / "posts" / f"{slug}.html"
@@ -84,12 +87,17 @@ def build_indexes(posts_meta):
     SITE.joinpath("posts/index.html").write_text(tpl_posts.render(posts=posts_meta, site_title="sonicsrc"), encoding='utf-8')
 
 def copy_assets():
-    if ASSETS.exists():
-        for item in ASSETS.iterdir():
-            target = SITE / "assets" / item.name
+    assets_dir = Path("assets")
+    target_dir = Path("site/assets")
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    for item in assets_dir.rglob("*"):
+        target = target_dir / item.relative_to(assets_dir)
+
+        if item.is_dir():
+            target.mkdir(parents=True, exist_ok=True)
+        else:
             shutil.copy2(item, target)
-    # create .nojekyll so GitHub Pages won't try to run Jekyll
-    (SITE / ".nojekyll").write_text("", encoding='utf-8')
 
 def main():
     ensure_site()
