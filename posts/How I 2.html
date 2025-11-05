@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>How I 2 — sonicsrc</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><a href="/">sonicsrc</a></h1>
+    <nav class="nav"><a href="/">Home</a> · <a href="/posts/">All Posts</a></nav>
+  </header>
+  <main class="container">
+    <article class="intro">
+      <h2>How I 2</h2>
+      <p class="meta">Published: 2025-11-05</p>
+      <div class="post-content"><hr />
+<p>title: "Optimizing CI Pipelines for Faster Feedback"
+date: 2025-11-05 08:00:00 +01:00
+slug: optimizing-ci-pipelines
+tags:
+  - ci
+  - devops
+  - performance
+summary: "Learn how to speed up your Continuous Integration pipelines with practical tips and optimizations."
+featured_image: /assets/images/ci-optimization.png</p>
+<hr />
+<h1>Optimizing CI Pipelines for Faster Feedback</h1>
+<p>Continuous Integration (CI) pipelines are a cornerstone of modern software development. However, as projects grow, these pipelines can become slow and inefficient. In this post, we’ll explore how to optimize CI pipelines to get faster feedback without sacrificing reliability.</p>
+<blockquote>
+<p>"Speed up your feedback, and you'll speed up your development process." – Anonymous</p>
+</blockquote>
+<h2>1. Reduce Build Time with Caching</h2>
+<p>Caching is one of the simplest and most effective ways to reduce build times. By storing and reusing build artifacts, you can skip redundant steps and dramatically cut down the time spent on building and testing.</p>
+<p>For example, with GitHub Actions, you can use the cache action like this:</p>
+<p>```yaml
+name: CI
+on: [push, pull_request]</p>
+<p>jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test</p></div>
+    </article>
+    <p><a href="/posts/">← All posts</a></p>
+  </main>
+  <footer class="footer"><small>© sonicsrc</small></footer>
+</body>
+</html>
