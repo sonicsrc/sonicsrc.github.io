@@ -1,35 +1,125 @@
+/* assets/style.css
+   Defensive, readable, dark-theme-friendly base stylesheet for posts.
+   Overwrites any rogue token/tag styles that cause pills to scatter. */
+
 :root{
-  --bg:#0b0f12;
-  --panel:#0f1417;
-  --muted:#94a3b8;
-  --accent:#6ee7b7;
+  --bg: #0b0f12;
+  --panel: #0f1417;
+  --muted: #98a0a6;
+  --text: #e6eef3;
+  --accent: #66c0ff;
+  --code-bg: rgba(255,255,255,0.03);
+  --code-border: rgba(255,255,255,0.04);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  --max-width: 980px;
+  --radius: 8px;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background:linear-gradient(180deg,var(--bg),#071017 120%);
-  color:#e6eef6;
-  font-family:var(--mono);
+
+/* Page shell */
+html,body{
+  height:100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height:1.5;
-  padding:28px;
+  margin:0;
+  padding:0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
-.top{border-left:4px solid var(--accent); padding-left:18px; margin-bottom:22px}
-.top h1{margin:.08rem 0; font-size:1.4rem}
-.top a{color:inherit; text-decoration:none}
-.nav{color:var(--muted); margin-top:4px}
-.container{max-width:960px; margin:0 auto}
-.intro, .posts, .about{background:rgba(255,255,255,0.02); padding:18px; border-radius:10px; margin-bottom:14px; box-shadow: 0 6px 18px rgba(0,0,0,0.5)}
-.posts ul{list-style:none; padding:0; margin:0}
-.posts li{padding:10px 0; border-bottom:1px dashed rgba(255,255,255,0.03)}
-.posts a{color:var(--accent); text-decoration:none}
-.posts a:hover{text-decoration:underline}
-.muted{color:var(--muted); font-size:.9rem}
-.footer{max-width:960px; margin:22px auto 0; color:var(--muted); text-align:center}
-code{background:rgba(255,255,255,0.03); padding:0 6px; border-radius:4px}
-.post-content pre{padding:10px; background:rgba(0,0,0,0.25); overflow:auto; border-radius:6px}
+
+/* Central container */
+.container{
+  max-width: var(--max-width);
+  margin: 36px auto;
+  padding: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  border-radius: 12px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.5);
+}
+
+/* Headings */
+h1,h2,h3,h4{ color:var(--text); margin:0.35em 0; }
+h1{ font-size:2rem; }
+h2{ font-size:1.25rem; color:var(--accent); }
+
+/* Paragraphs and lists */
+p,ul,ol{ color: var(--muted); margin: 0.6em 0; }
+
+/* Defensive reset for "pill"/"tag"/"token" classes that sometimes get created by markdown -> HTML converters */
+.tag, .tags, .token, .pill, .chip, .kbd, .inline-token {
+  display: inline !important;
+  position: static !important;
+  margin: 0 0.25em 0 0;
+  padding: 0.08em 0.28em !important;
+  background: rgba(255,255,255,0.02) !important;
+  color: var(--text) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255,255,255,0.03) !important;
+  font-family: var(--mono);
+  font-size: 0.88em;
+  line-height: 1;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  left: auto !important;
+  top: auto !important;
+}
+
+/* Inline code */
+p code, li code, span code, code.inline {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  padding: 0.12em 0.35em;
+  border-radius: 6px;
+  font-family: var(--mono);
+  color: var(--accent);
+  white-space: pre-wrap;
+}
+
+/* Block code styling */
+pre {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 10px;
+  padding: 18px;
+  overflow: auto;
+  border: 1px solid rgba(255,255,255,0.03);
+  margin: 1em 0;
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  position: relative;
+}
+
+/* code inside pre */
+pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text);
+  display: block;
+  white-space: pre; /* preserve formatting for block code */
+}
+
+/* copy button (if your template adds one inside pre) */
+.copy-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* images */
+figure img{ max-width:100%; height:auto; border-radius:8px; display:block; }
+figcaption{ color:var(--muted); font-size:0.9rem; margin-top:6px; }
+
+/* small screens */
 @media (max-width:700px){
-  body{padding:16px}
-  .top h1{font-size:1.25rem}
+  .container{ padding: 18px; margin: 16px; }
+  h1{ font-size:1.6rem; }
+  pre{ font-size:0.8rem; padding:12px; }
 }
