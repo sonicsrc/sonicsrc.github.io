@@ -18,12 +18,7 @@
 
       <section class="content">
         <h1>Geek-along: Install —and pin— Linux kernel <strong>6.12.38</strong> on Debian/Kali</h1>
-<p><em>Senior cyber security mentor → apprentice Greg. Focus: stable, simple, secure.</em></p>
-<blockquote>
-<p><strong>Quotation:</strong> "Stability in a kernel upgrade is not heroism — it's careful preparation."<br />
-— Senior instructor</p>
-</blockquote>
-<hr />
+<h2><em>Stable, simple, secure.</em></h2>
 <h2>TL;DR</h2>
 <p>This walkthrough shows how to install a specific downloaded kernel package (example: <strong>6.12.38+kali-amd64</strong>), ensure the matching headers are present, fix packaging hiccups, and pin/hold that kernel so your system doesn't auto-upgrade to an unwanted 6.16+ kernel. Commands are copy-ready. Prioritize backups and test on non-production first.</p>
 <hr />
@@ -202,8 +197,6 @@ sudo apt-mark hold linux-image-6.12.38+kali-amd64 linux-headers-6.12.38+kali-amd
 &lt;/figure&gt;
 </code></pre>
 <hr />
-<h2>Closing note to Greg (mentor → apprentice)</h2>
-<p>This process is about minimizing surprises. When you install a non-default kernel, you assume responsibility for boot integrity, driver matching, and update policy. Keep things explicit: store the .deb files, hold the versions you trust, and document your steps. If anything looks odd during dpkg or update-grub, stop and investigate—don't guess.</p>
       </section>
 
       <footer>
