@@ -1,0 +1,44 @@
+
+
+---
+title: "Images & copyable command/code blocks"
+date: 2025-11-05
+slug: Yo-here-is-a-title
+tags:
+  - example
+  - images
+  - commands
+summary: "How to add images and make code/command blocks easy to copy."
+---
+
+# Images & Copyable Blocks
+
+This post demonstrates an image, a captioned figure, a copy-friendly command block, and a syntax-highlighted code block.
+
+## Image via Markdown
+
+You can reference images stored in `assets/images/`:
+
+![Mock screenshot](/assets/images/mock-screenshot.png "Mock screenshot")
+
+## Image with caption and sizing (HTML figure)
+
+If you want a caption or to control width, use HTML:
+
+<figure>
+  <img src="/assets/images/linux-hardening-flow.svg" alt="Linux hardening flow" width="720"/>
+  <figcaption>Figure: Linux hardening flow (SVG)</figcaption>
+</figure>
+
+> Tip: use root-relative paths (`/assets/images/...`) so the image works the same locally and on GitHub Pages.
+
+## Copyable shell commands
+
+Run these in a terminal. The copy button will remove the leading `$ ` characters so you get runnable lines:
+
+```bash
+$ ./newpost.sh "My New Post"
+$ git add .
+$ git commit -m "Add post with image"
+$ git push
+
