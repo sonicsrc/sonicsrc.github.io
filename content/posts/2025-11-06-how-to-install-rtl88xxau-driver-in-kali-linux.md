@@ -18,7 +18,7 @@ Important prerequisites and safety
 1. Work on a local machine or an authorized test lab. Do not intercept networks or attempt attacks you are not explicitly allowed to perform.
 2. You may need internet connectivity to install packages and fetch source code.
 3. Know your kernel headers must match the running kernel; otherwise DKMS builds fail.
-4. Excessive TX power may be inlegal in your country — check the regulatory domain and local laws before changing transmitter power.
+4. Excessive TX power may be ylegal in your country — check the regulatory domain and local laws before changing transmitter power.
 
 A. Quick path — install Kali packaged driver (recommended if available)
 ----------------------------------------------------------------------
