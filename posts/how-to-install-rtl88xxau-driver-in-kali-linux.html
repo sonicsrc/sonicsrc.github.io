@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>How to install rtl88xxau driver in kali linux</title>
+  <link rel="stylesheet" href="/assets/style.css"/>
+</head>
+<body>
+  <main class="container">
+    <article class="post">
+      <header>
+        <h1>How to install rtl88xxau driver in kali linux</h1>
+        
+          <p class="meta">2025-11-06</p>
+        
+      </header>
+
+      <section class="content">
+        <p>Installing and configuring Realtek RTL88xxAU (8812AU / 8821AU) drivers on Kali Linux (with dkms)</p>
+<h2>Goal</h2>
+<p>Get a Realtek RTL88xxAU-based USB Wi‑Fi adapter working in Kali Linux with:
+ - DKMS-backed driver (survives kernel updates)
+ - Monitor mode + packet injection support
+ - Optional TX power adjustment (be aware of your local regulations)</p>
+<h2>Important prerequisites and safety</h2>
+<ol>
+<li>Work on a local machine or an authorized test lab. Do not intercept networks or attempt attacks you are not explicitly allowed to perform.</li>
+<li>You may need internet connectivity to install packages and fetch source code.</li>
+<li>Know your kernel headers must match the running kernel; otherwise DKMS builds fail.</li>
+<li>Excessive TX power may be illegal in your country — check the regulatory domain and local laws before changing transmitter power.</li>
+</ol>
+<h2>A. Quick path — install Kali packaged driver (recommended if available)</h2>
+<p>These packages are in Kali repositories and provide a DKMS package for many RTL88xxAU devices.</p>
+<p>Commands:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt full-upgrade -y
+
+# Install the packaged DKMS driver (Kali repo)
+sudo apt install -y realtek-rtl88xxau-dkms
+
+# Verify DKMS status and module presence
+sudo dkms status
+find /lib/modules/&quot;$(uname -r)&quot;/ -name &quot;*88*au*.ko&quot; || find /lib/modules/&quot;$(uname -r)&quot;/ -name &quot;8812au.ko&quot;
+
+# Load module (if not autoloaded)
+sudo modprobe 8812au || sudo modprobe 88xxau || true
+
+# Check dmesg for driver messages
+dmesg | tail -n 40 | grep -i -E &quot;8812|88xx|rtl|usb&quot;
+</code></pre>
+<p>If that worked you should see a new wireless interface in <code>ip link</code> or <code>iw dev</code>.</p>
+<h2>B. Build-from-source path (aircrack-ng / DKMS) — flexible and more up-to-date</h2>
+<p>Use this when the packaged driver doesn't support your kernel or you want the latest fixes.</p>
+<p>Commands:</p>
+<pre><code class="language-bash"># 1) Install build tools and headers
+sudo apt update
+sudo apt install -y git dkms build-essential bc libelf-dev rfkill
+
+# Ensure kernel headers exist for your running kernel:
+sudo apt install -y linux-headers-&quot;$(uname -r)&quot; || sudo apt install -y linux-headers-amd64
+
+# 2) Clone a maintained source (aircrack-ng branch is known and supports DKMS)
+git clone -b v5.6.4.2 https://github.com/aircrack-ng/rtl8812au.git
+cd rtl8812au
+
+# 3) Install via the included DKMS script
+sudo ./dkms-install.sh
+
+# Confirm install:
+sudo dkms status
+find /lib/modules/&quot;$(uname -r)&quot;/ -name &quot;*88*au*.ko&quot; || find /lib/modules/&quot;$(uname -r)&quot;/ -name &quot;8812au.ko&quot;
+</code></pre>
+<p>If <code>dkms-install.sh</code> is not present in a different repo, there may be <code>make</code>/<code>make install</code> or <code>sudo ./install-driver.sh</code> (see that repo's README).</p>
+<h2>C. Uninstalling / removing drivers</h2>
+<p>Remove the packaged driver:</p>
+<pre><code class="language-bash">sudo apt remove --purge -y realtek-rtl88xxau-dkms
+sudo apt autoremove -y
+</code></pre>
+<p>If you installed from a git repo that provided DKMS scripts:</p>
+<pre><code class="language-bash"># in the source directory:
+sudo ./dkms-remove.sh   # if present
+
+# OR remove via dkms directly (example module name/version; adjust to what `dkms status` shows)
+sudo dkms remove -m rtl8812au -v 5.6.4.2 --all
+sudo dkms status
+</code></pre>
+<h2>D. Enabling monitor mode and testing injection (benign checks)</h2>
+<p>1) Identify interface (it might be wlan0, wlan1, or something like wlx...)</p>
+<pre><code class="language-bash">ip link
+iw dev
+</code></pre>
+<p>2) Using <code>airmon-ng</code> (aircrack-ng suite)</p>
+<pre><code class="language-bash"># stop interfering services and put iface into monitor
+sudo airmon-ng check kill
+sudo airmon-ng start wlan0      # replace wlan0 with your interface
+# stop monitor mode and restore networking
+sudo airmon-ng stop wlan0mon
+sudo systemctl restart NetworkManager.service || sudo service NetworkManager restart
+</code></pre>
+<p>3) Manual method with <code>iw</code>:</p>
+<pre><code class="language-bash">sudo ip link set wlan0 down
+sudo iw dev wlan0 set type monitor
+sudo ip link set wlan0 up
+# verify
+iw dev wlan0 info
+</code></pre>
+<p>4) Test injection capability (safe test):</p>
+<pre><code class="language-bash"># install aircrack-ng if you don't already have it:
+sudo apt install -y aircrack-ng
+
+# run an injection test (this is a harmless TX/RX test)
+sudo aireplay-ng --test wlan0mon    # replace with your monitor interface (wlan0mon)
+</code></pre>
+<h2>E. Blacklist conflicting in-kernel driver (if necessary)</h2>
+<p>Some kernels ship <code>rtl8xxxu</code> which can bind before the out-of-tree module. If the out-of-tree driver fails to bind, blacklist the in-kernel one:</p>
+<pre><code class="language-bash">echo &quot;blacklist rtl8xxxu&quot; | sudo tee /etc/modprobe.d/blacklist-rtl8xxxu.conf
+# Rebuild initramfs (Debian/Kali)
+sudo update-initramfs -u
+# Reboot or reload modules
+sudo reboot
+</code></pre>
+<h2>F. Set TX power</h2>
+<p>You can inspect and set tx power. Examples:</p>
+<pre><code class="language-bash"># show current power settings
+iw dev wlan0 link
+iwconfig wlan0 | grep -i tx
+
+# using iwconfig (legacy):
+sudo ip link set wlan0 down
+sudo iwconfig wlan0 txpower 30  # sets 30 dBm (if hardware/regulatory allows)
+sudo ip link set wlan0 up
+
+# using modern iw (txpower in mBm, 3000 mBm == 30.00 dBm on many iw implementations)
+sudo ip link set wlan0 down
+sudo iw dev wlan0 set txpower fixed 3000
+sudo ip link set wlan0 up
+
+# verify:
+iw dev wlan0 info
+</code></pre>
+<p>If <code>Operation not permitted</code> or <code>Invalid argument</code> appears, your regulatory domain or driver doesn't allow the requested value.</p>
+<h2>G. Troubleshooting checklist</h2>
+<ul>
+<li>If DKMS build fails: ensure <code>linux-headers-$(uname -r)</code> are installed and match your running kernel. Some kernels use <code>-kali-amd64</code> variants; <code>linux-headers-amd64</code> is a helpful fallback.</li>
+<li>Inspect <code>sudo dkms build</code> output in <code>/var/lib/dkms/&lt;module&gt;/&lt;version&gt;/build/make.log</code>.</li>
+<li><code>dmesg | grep -i rtl</code> or <code>dmesg | grep -i 8812</code> for driver messages.</li>
+<li>If interface never appears: try removing and re-plugging the USB adapter, <code>sudo modprobe -r 88xxau 8812au rtl8xxxu</code>, then <code>sudo modprobe 8812au</code>.</li>
+<li>If you see kernel incompatibility with newest kernels, try a different upstream driver repo (morrownr, c4pt000, n0ss, aircrack-ng variants are commonly used).</li>
+<li>As a last resort, use the packaged Kali <code>.deb</code> from the Kali packages repo (it may contain patches for the distro): <code>sudo apt install realtek-rtl88xxau-dkms</code>.</li>
+</ul>
+<h2>References and further reading</h2>
+<ul>
+<li>aircrack-ng rtl8812au repository (DKMS scripts &amp; monitor support). See README. (used for build-from-source path).<br />
+   https://github.com/aircrack-ng/rtl8812au  (aircrack-ng).  </li>
+<li>Kali package: realtek-rtl88xxau-dkms (Kali packages repo).<br />
+   https://gitlab.com/kalilinux/packages/realtek-rtl88xxau-dkms  </li>
+<li>morrownr driver variant (alternative source, installer scripts):<br />
+   https://github.com/morrownr/8812au-20210820  </li>
+<li>Official Alfa documentation (device vendor notes): https://docs.alfa.com.tw/Support/Linux/RTL8812AU/ </li>
+</ul>
+      </section>
+
+      <footer>
+        <hr/>
+        <p style="color:var(--muted)">Published by the site. Keep backups and test kernels on non-production machines.</p>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>
