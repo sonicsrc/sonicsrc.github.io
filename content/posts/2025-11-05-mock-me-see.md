@@ -1,7 +1,7 @@
 ---
 title: "MOCK me ? see - ..."
 date: "2025-11-05"
-slug: "MOCK me ? see - ..."
+slug: "2025-11-05-mock-me-see"
 ---
 
 ---

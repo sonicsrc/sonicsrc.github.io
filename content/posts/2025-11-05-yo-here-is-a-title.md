@@ -1,14 +1,12 @@
-
-
 ---
 title: "Images & copyable command/code blocks"
 date: 2025-11-05
-slug: Yo-here-is-a-title
 tags:
   - example
   - images
   - commands
 summary: "How to add images and make code/command blocks easy to copy."
+slug: "2025-11-05-yo-here-is-a-title"
 ---
 
 # Images & Copyable Blocks

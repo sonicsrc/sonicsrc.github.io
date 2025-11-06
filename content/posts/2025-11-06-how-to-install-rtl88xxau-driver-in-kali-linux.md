@@ -1,7 +1,7 @@
 ---
 title: "How to install rtl88xxau driver in kali linux"
 date: "2025-11-06"
-slug: "how-to-install-rtl88xxau-driver-in-kali-linux"
+slug: "2025-11-06-how-to-install-rtl88xxau-driver-in-kali-linux"
 ---
 
 Installing and configuring Realtek RTL88xxAU (8812AU / 8821AU) drivers on Kali Linux (with dkms)

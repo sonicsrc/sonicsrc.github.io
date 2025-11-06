@@ -1,9 +1,8 @@
 ---
 title: "True false negpos"
 date: "2025-11-05"
-slug: "true-false-negpos"
+slug: "2025-11-05-true-false-negpos"
 ---
-
 
 # Images & Copyable Blocks
 

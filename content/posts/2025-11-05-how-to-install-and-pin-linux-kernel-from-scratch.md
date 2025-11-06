@@ -1,7 +1,7 @@
 ---
 title: "How to install and pin linux kernel from scratch"
 date: "2025-11-05"
-slug: "how-to-install-and-pin-linux-kernel-from-scratch"
+slug: "2025-11-05-how-to-install-and-pin-linux-kernel-from-scratch"
 ---
 
 # Geek-along: Install —and pin— Linux kernel **6.12.38** on Debian/Kali

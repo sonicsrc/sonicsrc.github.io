@@ -1,13 +1,13 @@
 ---
 title: "Optimizing CI Pipelines for Faster Feedback"
 date: 2025-11-05 08:00:00 +01:00
-slug: optimizing-ci-pipelines
 tags:
   - ci
   - devops
   - performance
 summary: "Learn how to speed up your Continuous Integration pipelines with practical tips and optimizations."
 featured_image: /assets/images/ci-optimization.png
+slug: "2025-11-05-testing-me-here"
 ---
 
 # Optimizing CI Pipelines for Faster Feedback

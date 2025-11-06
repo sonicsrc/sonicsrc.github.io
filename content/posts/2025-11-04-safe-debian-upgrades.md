@@ -1,7 +1,7 @@
 ---
 title: "Safe Debian upgrades"
 date: "2025-11-04"
-slug: "safe-debian-upgrades"
+slug: "2025-11-04-safe-debian-upgrades"
 ---
 
 ## Goal

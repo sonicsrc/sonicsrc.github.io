@@ -1,7 +1,7 @@
 ---
 title: "How-to-install-custom-kernel-kali-linux"
 date: "2025-11-05"
-slug: "how-to-install-custom-kernel-kali-linux"
+slug: "2025-11-05-how-to-install-custom-kernel-kali-linux"
 ---
 
 # Geek-along: Install —and pin— Linux kernel **6.12.38** on Debian/Kali
